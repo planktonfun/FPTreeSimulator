@@ -206,11 +206,12 @@
 				<div class="form-group">
 					<label for="input-area">Input</label>
 					<textarea id="input-area" class="form-control" rows="10">
-{Beer, Nuts, Diaper}
-{Beer, Coffee, Diaper}
-{Beer, Diaper, Eggs}
-{Nuts, Eggs, Milk}
-{Nuts, Coffee, Diaper, Milk}</textarea>
+{beer,nuts,diaper}
+{beer,coffee,diaper}
+{beer,diaper,eggs}
+{nuts,eggs,milk}
+{nuts,coffee,diaper,eggs,milk}
+</textarea>
 				</div>
 				<div class="form-inline">
 					<div class="form-group">
@@ -255,7 +256,7 @@
 		<span class="badge badge-success">Conclusion</span>
 
 		We can see that beer diaper are the best candidate for recommendation for our customer:
-		{beer:3, diaper:2}
+		{beer:3, diaper:4}
 
 		and we discovered more trees that can be used for recommendation.
 
@@ -273,6 +274,26 @@
 </div>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
+var sortArrayFromObject = function(items) {
+	return items.sort(function(a, b){
+	  return FPTreeSim.items[a] < FPTreeSim.items[b] ? 1 : -1;
+	});
+};
+
+var sortObject = function(items) {
+	var sortable = [];
+
+	for(var i in items) {
+		sortable.push([i,items[i]]);
+	}
+
+	sortable.sort(function(a, b) {
+	    return b[1] > a[1];
+	});
+
+	return sortable;
+};
+
 var FPTreeSim = {
 	sets 			: [],
 	items 			: {},
@@ -343,7 +364,12 @@ var FPTreeSim = {
 		for(var i = 0; i < FPTreeSim.sets.length; i++) {
 			freqItems = '';
 			row += '<tr><td>' + (i + 1) + '</td><td>{' + FPTreeSim.sets[i].join(', ') + '}</td>';
-			for(var j in FPTreeSim.items) {
+			var pad = sortObject(FPTreeSim.items);
+			for(var e = 0; e < pad.length; e++) {
+			   	var j = pad[e][0];
+				if(FPTreeSim.sets[i] == undefined) {
+					continue;
+				}
 				if(FPTreeSim.items[j] >= FPTreeSim.minSupport && FPTreeSim.sets[i].indexOf(j) > -1) {
 					FPTreeSim.orderedFreqItems.push(j);
 					freqItems += '<span id="freq-item-' + j + '-' + i + '" class="label label-default">' + j + '</span> ';
@@ -358,7 +384,7 @@ var FPTreeSim = {
 	renderGraph: function() {
 		document.getElementById('fp-tree').innerHTML = '<ul><li id="tree-origin">' + 
 		'<a href="#" id="tree-origin-label">{}</a><ul id="tree-origin-children"></ul></li></ul>';
-		FPTreeSim.nodeAnimation = setInterval(FPTreeSim.renderNode, 300);
+		FPTreeSim.nodeAnimation = setInterval(FPTreeSim.renderNode, 10);
 	},
 	renderNode: function() {
 		$('a.selected').removeClass('selected');
