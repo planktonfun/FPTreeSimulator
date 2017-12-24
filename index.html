@@ -384,7 +384,7 @@ var FPTreeSim = {
 	renderGraph: function() {
 		document.getElementById('fp-tree').innerHTML = '<ul><li id="tree-origin">' + 
 		'<a href="#" id="tree-origin-label">{}</a><ul id="tree-origin-children"></ul></li></ul>';
-		FPTreeSim.nodeAnimation = setInterval(FPTreeSim.renderNode, 10);
+		FPTreeSim.nodeAnimation = setInterval(FPTreeSim.renderNode, 300);
 	},
 	renderNode: function() {
 		$('a.selected').removeClass('selected');
