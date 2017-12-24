@@ -12,7 +12,6 @@
 		padding-top: 20px; position: relative;
 		transition: all 0.5s;
 	}
-
 	.tree li {
 		float: left; text-align: center;
 		list-style-type: none;
@@ -20,9 +19,7 @@
 		padding: 20px 5px 0 5px;
 		transition: all 0.5s;
 	}
-
 	/*We will use ::before and ::after to draw the connectors*/
-
 	.tree li::before, .tree li::after{
 		content: '';
 		position: absolute; top: 0; right: 50%;
@@ -33,16 +30,13 @@
 		right: auto; left: 50%;
 		border-left: 1px solid #ccc;
 	}
-
 	/*We need to remove left-right connectors from elements without 
 	any siblings*/
 	.tree li:only-child::after, .tree li:only-child::before {
 		display: none;
 	}
-
 	/*Remove space from the top of single children*/
 	.tree li:only-child{ padding-top: 0;}
-
 	/*Remove left connector from first child and 
 	right connector from last child*/
 	.tree li:first-child::before, .tree li:last-child::after{
@@ -56,7 +50,6 @@
 	.tree li:first-child::after{
 		border-radius: 5px 0 0 0;
 	}
-
 	/*Time to add downward connectors from parents*/
 	.tree ul ul::before{
 		content: '';
@@ -64,7 +57,6 @@
 		border-left: 1px solid #ccc;
 		width: 0; height: 20px;
 	}
-
 	.tree li a{
 		border: 1px solid #ccc;
 		padding: 4px 8px;
@@ -78,7 +70,6 @@
 		color: #ffffff;
 		background-color:  #5bc0de;;
 	}
-
 	/*Time for some hover effects*/
 	/*We will apply the hover effect the the lineage of the element also*/
 	.tree li a:hover, .tree li a:hover+ul li a {
@@ -91,6 +82,10 @@
 	.tree li a:hover+ul ul::before{
 		border-color:  #94a0b4;
 	}
+
+	#fp-tree {
+		width: 100%;
+	}
 	</style>
 </head>
 <body>
@@ -102,11 +97,12 @@
 			<fieldset>
 				<div class="form-group">
 					<label for="input-area">Input</label>
-					<textarea id="input-area" class="form-control" rows="10">{f,a,c,d,g,i,m,p}
-{a,b,c,f,l,m,o}
-{b,f,h,j,o,w}
-{b,c,k,s,p}
-{a,f,c,e,l,p,m,n}</textarea>
+					<textarea id="input-area" class="form-control" rows="10">
+{abn,bn,dn,mail,potato,pizza,cheeze,bread}
+{bn,banana,dn,abn,diapers,cheeze,beer}
+{banana,abn,grapes,j,beer,orange}
+{banana,dn,pan,glass,bread}
+{bn,abn,dn,tfn,diapers,bread,cheeze,cereal}</textarea>
 				</div>
 			
 
@@ -164,7 +160,6 @@ var FPTreeSim = {
 	
 	minSupport 		: 0,
 	orderedFreqItems: [],
-
 	prevNode 		: 'tree-origin',
 	currentNodeLevel: 0,
 	currentRowLevel : 0,
@@ -180,13 +175,10 @@ var FPTreeSim = {
 		FPTreeSim.prevNode 			= 'tree-origin';
 		FPTreeSim.currentNodeLevel	= 0;
 		FPTreeSim.currentRowLevel	= 0;
-
 		clearInterval(FPTreeSim.nodeAnimation);
 		FPTreeSim.nodeAnimation = null;
-
 		var text = document.getElementById('input-area').value.toLowerCase();
 		document.getElementById('input-area').value = text.replace(/[^a-z{},\n]/ig, '');
-
 		FPTreeSim.minSupport = parseInt(document.getElementById('input-min-support').value);
 		FPTreeSim.identifySets(text);
 	},
@@ -195,7 +187,6 @@ var FPTreeSim = {
 		for(var i = 0; i < cansets.length; i++) {
 			cansets[i] = cansets[i].replace(/[\s]/ig, '').split(',');
 		}
-
 		FPTreeSim.sets = cansets;
 		FPTreeSim.getItemCounts();
 	},
@@ -211,7 +202,6 @@ var FPTreeSim = {
 				}
 			}
 		}
-
 		FPTreeSim.renderFrequentItems();
 	},
 	renderFrequentItems: function() {
@@ -249,7 +239,7 @@ var FPTreeSim = {
 	renderGraph: function() {
 		document.getElementById('fp-tree').innerHTML = '<ul><li id="tree-origin">' + 
 		'<a href="#" id="tree-origin-label">{}</a><ul id="tree-origin-children"></ul></li></ul>';
-		FPTreeSim.nodeAnimation = setInterval(FPTreeSim.renderNode, 1800);
+		FPTreeSim.nodeAnimation = setInterval(FPTreeSim.renderNode, 300);
 	},
 	renderNode: function() {
 		$('a.selected').removeClass('selected');
@@ -272,16 +262,14 @@ var FPTreeSim = {
 				item + ': 1</a><ul id="tree-node-' + item + '-' + FPTreeSim.currentNodeLevel + 
 				'-children" class="hide"></ul></li>';
 				document.getElementById(FPTreeSim.prevNode + '-children').className = '';
-
 				itemNode = document.getElementById('tree-node-' + item + '-' + FPTreeSim.currentNodeLevel + '-label');
 			}
 			else {
 				setTimeout(function() {
 					var comps = itemNode.innerHTML.split(':');
 					itemNode.innerHTML = comps[0] + ': ' + (parseInt(comps[1]) + 1);
-				}, 900);
+				}, 100);
 			}
-
 			/** highlight graph node and freq items row item */
 			itemNode.className = 'selected';
 			document.getElementById('freq-item-' + item + '-' + FPTreeSim.currentRowLevel).className = 'label label-info';
