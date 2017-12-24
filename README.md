@@ -1,5 +1,7 @@
 # FP-Tree Simulator
 
+Online Demo [here](https://planktonfun.github.io/FPTreeSimulator/).
+
 A simple animated page in JS to display how Frequent Pattern trees are formed 
 from a list of frequent items. Accepts input in the form of newline-separated 
 sets of itemsets, gets the frequent items depending on any provided min support 
