@@ -193,21 +193,25 @@
 <body>
 <div class="container">	
 	<h1>FP-Tree Simulator</h1>
-
+	<div class="h4">
+		From Intuition we can see that whenever a customer buys "beer", they will also buy "diaper"
+		Let's see how this is done by frequency pattern algorithm, hit the submit button.
+	</div>
+	<p>
+		<span class="badge badge-success">TIP</span> Change the Input field to play around with custom data.
+	</p>
 	<div class="row">
 		<div class="col-xs-9">
 			<fieldset>
 				<div class="form-group">
 					<label for="input-area">Input</label>
 					<textarea id="input-area" class="form-control" rows="10">
-{butter,yogurt,cookies,mail,potato,pizza,cheeze,bread}
-{yogurt,banana,cookies,butter,diapers,cheeze,beer}
-{banana,butter,grapes,honey,beer,orange}
-{banana,cookies,pan,glass,bread}
-{yogurt,butter,cookies,apple,diapers,bread,cheeze,cereal}</textarea>
+{Beer, Nuts, Diaper}
+{Beer, Coffee, Diaper}
+{Beer, Diaper, Eggs}
+{Nuts, Eggs, Milk}
+{Nuts, Coffee, Diaper, Milk}</textarea>
 				</div>
-			
-
 				<div class="form-inline">
 					<div class="form-group">
 					<label for="input-area">Min Support</label>
@@ -245,6 +249,19 @@
 			</table>
 		</div>
 		<div id="fp-tree" class="col-xs-8 tree" style="min-height:500px"></div>
+	</div>
+	<div class="row">
+		<p>
+		<span class="badge badge-success">Conclusion</span>
+
+		We can see that beer diaper are the best candidate for recommendation for our customer:
+		{beer:3, diaper:2}
+
+		and we discovered more trees that can be used for recommendation.
+
+		As our data grows, our intuition alone couldn't handle it,
+		so we need an accurate way to manage and discover data and frequency pattern algorithm does just that.
+		</p>
 	</div>
 
 	
@@ -370,7 +387,7 @@ var FPTreeSim = {
 				setTimeout(function() {
 					var comps = itemNode.innerHTML.split(':');
 					itemNode.innerHTML = comps[0] + ': ' + (parseInt(comps[1]) + 1);
-				}, 100);
+				}, 10);
 			}
 			/** highlight graph node and freq items row item */
 			itemNode.className = 'selected';
