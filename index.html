@@ -233,6 +233,15 @@
 					<button class="btn btn-info" onclick="FPTreeSim.cleanData()">Submit</button>
 					<button class="btn btn-info" onclick="FPTreeSim.prune()">Prune</button>
 				</div>
+				<div class="form-inline" style="padding-top: 10px;">
+					<div class="form-group">
+					  <label for="render-speed">Flow chart speed:</label>
+					  <select class="form-control" id="render-speed">
+					    <option value="300" selected>Normal</option>
+					    <option value="10">Fast</option>
+					  </select>
+					</div>
+				</div>
 			</fieldset>
 		</div>
 		<div class="col-xs-3">
@@ -403,7 +412,7 @@ var FPTreeSim = {
 	renderGraph: function() {
 		document.getElementById('fp-tree').innerHTML = '<ul><li id="tree-origin">' + 
 		'<a href="#" id="tree-origin-label">{}</a><ul id="tree-origin-children"></ul></li></ul>';
-		FPTreeSim.nodeAnimation = setInterval(FPTreeSim.renderNode, 300);
+		FPTreeSim.nodeAnimation = setInterval(FPTreeSim.renderNode, parseInt($('#render-speed').val()));
 	},
 	renderNode: function() {
 		$('a.selected').removeClass('selected');
