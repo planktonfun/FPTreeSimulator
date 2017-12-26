@@ -188,6 +188,17 @@
 	.tree li a:hover+ul ul::before{
 		border-color:  #94a0b4;
 	}
+
+	.viewer {
+		overflow-x: scroll;
+	    overflow-y: scroll;
+	    height: 500px;
+	}
+
+	#fp-tree {
+		width: 9000px;
+    	height: 9000px;
+	}
 	</style>
 </head>
 <body>
@@ -220,6 +231,7 @@
 					</div>
 
 					<button class="btn btn-info" onclick="FPTreeSim.cleanData()">Submit</button>
+					<button class="btn btn-info" onclick="FPTreeSim.prune()">Prune</button>
 				</div>
 			</fieldset>
 		</div>
@@ -249,7 +261,9 @@
 				<tbody id="table-items"></tbody>
 			</table>
 		</div>
-		<div id="fp-tree" class="col-xs-8 tree" style="min-height:500px"></div>
+		<div class="col-xs-8 viewer">
+			<div id="fp-tree" class="col-xs-8 tree" style="min-height:500px"></div>
+		</div>
 	</div>
 	<div class="row">
 		<p>
@@ -321,6 +335,11 @@ var FPTreeSim = {
 		document.getElementById('input-area').value = text.replace(/[^a-z{},\n]/ig, '');
 		FPTreeSim.minSupport = parseInt(document.getElementById('input-min-support').value);
 		FPTreeSim.identifySets(text);
+	},
+	prune: function() {
+		$( "a:contains(': 1<')" ).each(function(){
+			console.log($(this).closest('li').remove());
+		});
 	},
 	identifySets: function(text) {
 		var cansets = text.replace(/[{}]/ig, '').split('\n');
