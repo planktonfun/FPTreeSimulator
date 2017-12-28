@@ -69,14 +69,11 @@
 		color: #ffffff;
 		background-color:  #5bc0de;;
 	}
-
 	/*Time for some hover effects*/
 	/*We will apply the hover effect the the lineage of the element also*/
 	.tree li a:hover, .tree li a:hover+ul li a {
 		background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
 	}
-
-
 	.tree ul {
 		padding-top: 20px;
 	    position: relative;
@@ -85,7 +82,6 @@
 		-webkit-transition: all 0.5s;
 		-moz-transition: all 0.5s;
 	}
-
 	.tree li {
 	    white-space: nowrap;
 		float: left;
@@ -98,9 +94,7 @@
 		-webkit-transition: all 0.5s;
 		-moz-transition: all 0.5s;
 	}
-
 	/*We will use ::before and ::after to draw the connectors*/
-
 	.tree li::before, .tree li::after{
 		content: '';
 		position: absolute;
@@ -115,18 +109,15 @@
 	    left: 50%;
 		border-left: 1px solid #ccc;
 	}
-
 	/*We need to remove left-right connectors from elements without
 	 any siblings*/
 	.tree li:only-child::after, .tree li:only-child::before {
 		display: none;
 	}
-
 	/*Remove space from the top of single children*/
 	.tree li:only-child{
 	    padding-top: 0;
 	}
-
 	/*Remove left connector from first child and
 	 right connector from last child*/
 	.tree li:first-child::before, .tree li:last-child::after{
@@ -144,7 +135,6 @@
 		-webkit-border-radius: 5px 0 0 0;
 		-moz-border-radius: 5px 0 0 0;
 	}
-
 	/*Time to add downward connectors from parents*/
 	.tree ul ul::before{
 		content: '';
@@ -155,7 +145,6 @@
 		width: 0;
 	    height: 20px;
 	}
-
 	.tree li a{
 		border: 1px solid #ccc;
 		padding: 5px 10px;
@@ -173,7 +162,6 @@
 		-webkit-transition: all 0.5s;
 		-moz-transition: all 0.5s;
 	}
-
 	/*Time for some hover effects*/
 	/*We will apply the hover effect the the lineage of the element also*/
 	.tree li a:hover, .tree li a:hover+ul li a {
@@ -188,13 +176,11 @@
 	.tree li a:hover+ul ul::before{
 		border-color:  #94a0b4;
 	}
-
 	.viewer {
 		overflow-x: scroll;
 	    overflow-y: scroll;
-	    height: 500px;
+	    height: 361px;
 	}
-
 	#fp-tree {
 		width: 9000px;
     	height: 9000px;
@@ -276,6 +262,16 @@
 	</div>
 	<div class="row">
 		<p>
+		<span class="badge badge-success">Findings</span>
+
+		According to frequency data we are certain that:
+
+			<div id="findings">
+			</div>
+		</p>
+	</div>
+	<div class="row">
+		<p>
 		<span class="badge badge-success">Conclusion</span>
 
 		We can see that beer diaper are the best candidate for recommendation for our customer:
@@ -297,26 +293,89 @@
 </div>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
-var sortArrayFromObject = function(items) {
-	return items.sort(function(a, b){
-	  return FPTreeSim.items[a] < FPTreeSim.items[b] ? 1 : -1;
-	});
+var combinations = function(arr){
+  if (arr.length === 1) return [arr];
+  else {
+  	subarr = combinations(arr.slice(1));
+  	return subarr.concat(subarr.map(e => e.concat(arr[0])), [[arr[0]]]);
+  }
+}
+
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
 };
+
+var generateSupport = function(itemString) {	
+	var pool = itemString.join(';').replaceAll(";|;", "|").replace("||", "|").split('|');
+
+	for (var i = pool.length - 1; i >= 0; i--) {
+		var instances = combinations(pool[i].split(';'));
+
+		for (var e = instances.length - 1; e >= 0; e--) {
+			var key = instances[e].join(',');
+
+			if(FPTreeSim.supportPool[key] != undefined) {
+				FPTreeSim.supportPool[key]++;
+			} else {
+				FPTreeSim.supportPool[key] = 1;
+			}
+		}
+	}
+
+	var totalTransactions = document.getElementById('input-area').value.split('}').length;
+
+	for (var support in FPTreeSim.supportPool) {
+		FPTreeSim.supportPool[support] = {
+			transaction_count: FPTreeSim.supportPool[support],
+			total_transactions: totalTransactions,
+			support_value: FPTreeSim.supportPool[support] / totalTransactions
+		};
+	}
+
+	return FPTreeSim.supportPool;
+}
+
+var generateConfidence = function() {
+	var confidence = {};
+	for (var support in FPTreeSim.supportPool) {
+		if(
+			FPTreeSim.supportPool[support].transaction_count >= 
+			FPTreeSim.minSupport
+		) {
+			if(support.indexOf(',') >= 0) {
+				var rules = support.replace(/(,)([^,]+$)/,';$2').split(';');
+				var antecedent = rules[0];
+				var consequent = rules[1];
+
+				var result = FPTreeSim.supportPool[support].support_value
+					/
+					FPTreeSim.supportPool[antecedent].support_value;
+
+				if(result == 1) {
+					confidence['whenever someone buys ' + antecedent + ' they would 100% buy ' + consequent] = result;
+				}
+			}
+		}
+	}
+
+	for(var findings in confidence) {
+		$('#findings').html(findings);
+	}
+
+	return confidence;
+}
 
 var sortObject = function(items) {
 	var sortable = [];
-
 	for(var i in items) {
 		sortable.push([i,items[i]]);
 	}
-
 	sortable.sort(function(a, b) {
 	    return b[1] > a[1];
 	});
-
 	return sortable;
 };
-
 var FPTreeSim = {
 	sets 			: [],
 	items 			: {},
@@ -327,7 +386,9 @@ var FPTreeSim = {
 	currentNodeLevel: 0,
 	currentRowLevel : 0,
 	nodeAnimation 	: null,
-	
+	supportPool     : {},
+	confidencePool  : {},
+
 	cleanData: function() {
 		FPTreeSim.sets 				= [];
 		FPTreeSim.items 			= {};
@@ -347,8 +408,10 @@ var FPTreeSim = {
 	},
 	prune: function() {
 		$( "a:contains(': 1')" ).each(function(){
-			console.log($(this).closest('li').remove());
+			$(this).closest('li').remove();
 		});
+
+		$("ul:empty").remove();
 	},
 	identifySets: function(text) {
 		var cansets = text.replace(/[{}]/ig, '').split('\n');
@@ -406,6 +469,10 @@ var FPTreeSim = {
 			row += '<td>{' + freqItems + '}</td></tr>';
 			FPTreeSim.orderedFreqItems.push('|');
 		}
+
+		window.orderedFreqItems = FPTreeSim.orderedFreqItems.slice(0);
+		generateSupport(window.orderedFreqItems);
+		FPTreeSim.confidencePool = generateConfidence();
 		document.getElementById('table-items').innerHTML = row;
 		FPTreeSim.renderGraph();
 	},
