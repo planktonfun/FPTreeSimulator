@@ -309,6 +309,8 @@ String.prototype.replaceAll = function(search, replacement) {
 var generateSupport = function(itemString) {	
 	var pool = itemString.join(';').replaceAll(";|;", "|").replace("||", "|").split('|');
 
+	FPTreeSim.supportPool = {};
+
 	for (var i = pool.length - 1; i >= 0; i--) {
 		var instances = combinations(pool[i].split(';'));
 
@@ -359,8 +361,10 @@ var generateConfidence = function() {
 		}
 	}
 
+	$('#findings').html('');
+
 	for(var findings in confidence) {
-		$('#findings').html(findings);
+		$('#findings').append(findings + '<br>');
 	}
 
 	return confidence;
