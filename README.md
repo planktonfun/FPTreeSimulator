@@ -36,3 +36,8 @@ TODO
 ----
 
 * Test
+
+References
+----
+https://docs.google.com/spreadsheets/d/1fFKVReyCA-6fiMh-zgfXUPloEFohkVV2qEbgQob6wZM/edit#gid=0
+https://en.wikipedia.org/wiki/Association_rule_learning#Confidence
