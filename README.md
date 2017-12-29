@@ -39,5 +39,5 @@ TODO
 
 References
 ----
-https://docs.google.com/spreadsheets/d/1fFKVReyCA-6fiMh-zgfXUPloEFohkVV2qEbgQob6wZM/edit#gid=0
+https://docs.google.com/a/honcho.com/spreadsheets/d/1fFKVReyCA-6fiMh-zgfXUPloEFohkVV2qEbgQob6wZM/edit?usp=sharing
 https://en.wikipedia.org/wiki/Association_rule_learning#Confidence
